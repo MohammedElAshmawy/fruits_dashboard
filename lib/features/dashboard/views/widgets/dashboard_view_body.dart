@@ -1,4 +1,5 @@
 import 'package:e_commerce_dashboard/features/add_product/presentation/add_product_view.dart';
+import 'package:e_commerce_dashboard/features/orders/presentation/views/orders_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/custom_button.dart';
@@ -19,6 +20,12 @@ class DashboardViewBody extends StatelessWidget {
                   Navigator.pushNamed(context, AddProductView.routeName);
                 },
                 text: "Add Data"),
+            SizedBox(height: 16,),
+            CustomButton(
+                onPressed: (){
+                  Navigator.pushNamed(context, OrdersView.routeName);
+                },
+                text: "Orders"),
           ],
         ),
       ),
