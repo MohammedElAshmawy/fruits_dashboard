@@ -1,19 +1,14 @@
+import 'package:e_commerce_dashboard/features/orders/domain/entities/shipping_address_entity.dart';
 
-class ShippingAddressModel {
-  String? name;
-  String? phone;
-  String? address;
-  String? city;
-  String? email;
-  String? floor;
+class ShippingAddressModel extends ShippingAddressEntity {
 
   ShippingAddressModel({
-    this.name,
-    this.phone,
-    this.address,
-    this.city,
-    this.email,
-    this.floor,
+    required super.name,
+    required super.phone,
+    required super.address,
+    required super.city,
+    required super.email,
+    required super.floor,
   });
 
   factory ShippingAddressModel.fromJson(Map<String, dynamic> json) {
@@ -27,7 +22,7 @@ class ShippingAddressModel {
     );
   }
 
-  toJson() {
+  Map<String, dynamic> toJson() {
     return {
       'name': name,
       'phone': phone,

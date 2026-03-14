@@ -1,10 +1,11 @@
-import 'package:e_commerce_dashboard/core/helper_function/get_dummy.dart';
-import 'package:e_commerce_dashboard/features/orders/presentation/views/widgets/order_item.dart';
+import 'package:e_commerce_dashboard/features/orders/domain/entities/order_entity.dart';
+import 'package:e_commerce_dashboard/features/orders/presentation/views/widgets/order_item_list_view.dart';
 import 'package:flutter/material.dart';
 
 class OrdersViewBody extends StatelessWidget {
-  const OrdersViewBody({super.key});
+  const OrdersViewBody({super.key, required this.orders});
 
+  final List<OrderEntity> orders;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -26,8 +27,7 @@ class OrdersViewBody extends StatelessWidget {
               ],
             ),
           ),
-          OrderItem(order: testOrder)
-
+          Expanded(child: OrderItemListView(orders: orders))
         ],
       ),
     );

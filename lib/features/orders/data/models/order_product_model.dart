@@ -1,17 +1,12 @@
+import 'package:e_commerce_dashboard/features/orders/domain/entities/order_product_entity.dart';
 
-class OrderProductModel {
-  final String name;
-  final String code;
-  final String imageUrl;
-  final double price;
-  final int quantity;
-
+class OrderProductModel extends OrderProductEntity {
   OrderProductModel({
-    required this.name,
-    required this.code,
-    required this.imageUrl,
-    required this.price,
-    required this.quantity,
+    required super.name,
+    required super.code,
+    required super.imageUrl,
+    required super.price,
+    required super.quantity,
   });
 
   factory OrderProductModel.fromJson(Map<String, dynamic> json) {
@@ -19,13 +14,12 @@ class OrderProductModel {
       name: json['name'],
       code: json['code'],
       imageUrl: json['imageUrl'],
-      price: json['price'],
+      price: (json['price'] as num).toDouble(),
       quantity: json['quantity'],
     );
   }
 
-
-  toJson() {
+  Map<String, dynamic> toJson() {
     return {
       'name': name,
       'code': code,

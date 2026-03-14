@@ -1,13 +1,9 @@
+import 'package:e_commerce_dashboard/features/orders/domain/entities/order_entity.dart';
+import 'package:e_commerce_dashboard/features/orders/domain/entities/order_product_entity.dart';
 import 'package:flutter/material.dart';
 
-import '../../../data/models/order_model.dart';
-import '../../../data/models/order_product_model.dart';
-
-// ─────────────────────────────────────────────
-//  OrderItemCard  –  drop-in widget
-// ─────────────────────────────────────────────
 class OrderItem extends StatelessWidget {
-  final OrderModel order;
+  final OrderEntity order;
   final VoidCallback? onTap;
 
   const OrderItem({
@@ -18,7 +14,6 @@ class OrderItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
 
     return GestureDetector(
       onTap: onTap,
@@ -29,7 +24,7 @@ class OrderItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
+              color: Colors.black.withValues(alpha: 0.06),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),
@@ -38,17 +33,10 @@ class OrderItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Header ──────────────────────────────
             _OrderHeader(order: order),
-
             const Divider(height: 1, indent: 16, endIndent: 16),
-
-            // ── Product list ─────────────────────────
             _ProductList(products: order.orderProducts),
-
             const Divider(height: 1, indent: 16, endIndent: 16),
-
-            // ── Footer ──────────────────────────────
             _OrderFooter(order: order),
           ],
         ),
@@ -57,11 +45,8 @@ class OrderItem extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────
-//  Header  (Order ID · Status badge · Date)
-// ─────────────────────────────────────────────
 class _OrderHeader extends StatelessWidget {
-  final OrderModel order;
+  final OrderEntity order;
   const _OrderHeader({required this.order});
 
   @override
@@ -75,7 +60,7 @@ class _OrderHeader extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: const Color(0xFF1A1A2E).withOpacity(0.06),
+              color: const Color(0xFF1A1A2E).withValues(alpha: 0.06),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
@@ -102,7 +87,7 @@ class _OrderHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  order.shippingAddressModel.name ?? '—',
+                  order.shippingAddressEntity.name ?? '—',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey.shade500,
@@ -121,9 +106,6 @@ class _OrderHeader extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────
-//  Status Badge
-// ─────────────────────────────────────────────
 class _StatusBadge extends StatelessWidget {
   final String status;
   const _StatusBadge({required this.status});
@@ -194,11 +176,8 @@ class _StatusBadge extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────
-//  Product List
-// ─────────────────────────────────────────────
 class _ProductList extends StatelessWidget {
-  final List<OrderProductModel> products;
+  final List<OrderProductEntity> products;
   const _ProductList({required this.products});
 
   @override
@@ -231,7 +210,7 @@ class _ProductList extends StatelessWidget {
 }
 
 class _ProductRow extends StatelessWidget {
-  final OrderProductModel product;
+  final OrderProductEntity product;
   const _ProductRow({required this.product});
 
   @override
@@ -240,7 +219,6 @@ class _ProductRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: Row(
         children: [
-          // Product image
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.network(
@@ -323,16 +301,13 @@ class _ProductRow extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────
-//  Footer  (Payment · Address · Total)
-// ─────────────────────────────────────────────
 class _OrderFooter extends StatelessWidget {
-  final OrderModel order;
+  final OrderEntity order;
   const _OrderFooter({required this.order});
 
   @override
   Widget build(BuildContext context) {
-    final addr = order.shippingAddressModel;
+    final addr = order.shippingAddressEntity;
     final addressLine = [addr.address, addr.city]
         .where((e) => e != null && e.isNotEmpty)
         .join(', ');
