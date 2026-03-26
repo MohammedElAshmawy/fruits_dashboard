@@ -1,20 +1,19 @@
+import 'package:e_commerce_dashboard/core/utils/colors.dart';
+import 'package:e_commerce_dashboard/features/orders/data/models/status_enum.dart';
 import 'package:e_commerce_dashboard/features/orders/domain/entities/order_entity.dart';
 import 'package:e_commerce_dashboard/features/orders/domain/entities/order_product_entity.dart';
+import 'package:e_commerce_dashboard/features/orders/presentation/manager/update_order/update_order_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OrderItem extends StatelessWidget {
-  final OrderEntity order;
+  final OrderEntity orderEntity;
   final VoidCallback? onTap;
 
-  const OrderItem({
-    super.key,
-    required this.order,
-    this.onTap,
-  });
+  const OrderItem({super.key, required this.orderEntity, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -33,11 +32,35 @@ class OrderItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _OrderHeader(order: order),
+            _OrderHeader(
+              status: orderEntity.status!,
+              order: orderEntity,
+            ),
             const Divider(height: 1, indent: 16, endIndent: 16),
-            _ProductList(products: order.orderProducts),
+            _ProductList(products: orderEntity.orderProducts),
             const Divider(height: 1, indent: 16, endIndent: 16),
-            _OrderFooter(order: order),
+            _OrderFooter(order: orderEntity),
+            Divider(height: 1, indent: 16, endIndent: 16),
+            SizedBox(height: 8),
+            OrderItemActionButtons(
+              onTapAccept: () {
+                print("accept${orderEntity.status}" );
+                context.read<UpdateOrderCubit>().updateOrderStatus(
+                  orderId: orderEntity.orderId,
+                  status: OrderStatus.accepted,
+                );
+                print("accept${orderEntity.status}" );
+              },
+              onTapReject: () {
+                print("accept${orderEntity.status}" );
+                context.read<UpdateOrderCubit>().updateOrderStatus(
+                  orderId: orderEntity.orderId,
+                  status: OrderStatus.rejected,
+                );
+                print("accept${orderEntity.status} after" );
+              },
+            ),
+            SizedBox(height: 8),
           ],
         ),
       ),
@@ -45,9 +68,73 @@ class OrderItem extends StatelessWidget {
   }
 }
 
+class OrderItemActionButtons extends StatelessWidget {
+  const OrderItemActionButtons({
+    super.key,
+    required this.onTapAccept,
+    required this.onTapReject,
+  });
+
+  final VoidCallback onTapAccept;
+  final VoidCallback onTapReject;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: onTapAccept,
+          child: Container(
+            width: 100,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: AppColors.primaryColor,
+              borderRadius: BorderRadius.circular(25),
+            ),
+            child: Center(
+              child: Text(
+                'Accept',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.whiteColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: 60),
+        GestureDetector(
+          onTap: onTapReject,
+          child: Container(
+            width: 100,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(25),
+            ),
+            child: Center(
+              child: Text(
+                'Reject',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.whiteColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _OrderHeader extends StatelessWidget {
   final OrderEntity order;
-  const _OrderHeader({required this.order});
+  final OrderStatus status;
+  const _OrderHeader({required this.order, required this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +142,6 @@ class _OrderHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
       child: Row(
         children: [
-          // Order icon
           Container(
             width: 40,
             height: 40,
@@ -70,8 +156,6 @@ class _OrderHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-
-          // Order ID + customer name
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,9 +181,7 @@ class _OrderHeader extends StatelessWidget {
               ],
             ),
           ),
-
-          // Status badge
-          _StatusBadge(status: 'pending'),
+          _StatusBadge(status: status.name),
         ],
       ),
     );
@@ -108,6 +190,7 @@ class _OrderHeader extends StatelessWidget {
 
 class _StatusBadge extends StatelessWidget {
   final String status;
+
   const _StatusBadge({required this.status});
 
   Color get _bg {
@@ -178,6 +261,7 @@ class _StatusBadge extends StatelessWidget {
 
 class _ProductList extends StatelessWidget {
   final List<OrderProductEntity> products;
+
   const _ProductList({required this.products});
 
   @override
@@ -211,6 +295,7 @@ class _ProductList extends StatelessWidget {
 
 class _ProductRow extends StatelessWidget {
   final OrderProductEntity product;
+
   const _ProductRow({required this.product});
 
   @override
@@ -230,14 +315,15 @@ class _ProductRow extends StatelessWidget {
                 width: 46,
                 height: 46,
                 color: Colors.grey.shade100,
-                child: Icon(Icons.image_not_supported_rounded,
-                    size: 20, color: Colors.grey.shade400),
+                child: Icon(
+                  Icons.image_not_supported_rounded,
+                  size: 20,
+                  color: Colors.grey.shade400,
+                ),
               ),
             ),
           ),
           const SizedBox(width: 12),
-
-          // Name + code
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,10 +341,7 @@ class _ProductRow extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   'SKU: ${product.code}',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.grey.shade500,
-                  ),
+                  style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
                 ),
               ],
             ),
@@ -278,8 +361,7 @@ class _ProductRow extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(6),
@@ -303,14 +385,16 @@ class _ProductRow extends StatelessWidget {
 
 class _OrderFooter extends StatelessWidget {
   final OrderEntity order;
+
   const _OrderFooter({required this.order});
 
   @override
   Widget build(BuildContext context) {
     final addr = order.shippingAddressEntity;
-    final addressLine = [addr.address, addr.city]
-        .where((e) => e != null && e.isNotEmpty)
-        .join(', ');
+    final addressLine = [
+      addr.address,
+      addr.city,
+    ].where((e) => e != null && e.isNotEmpty).join(', ');
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
@@ -385,6 +469,7 @@ class _OrderFooter extends StatelessWidget {
 class _FooterChip extends StatelessWidget {
   final IconData icon;
   final String label;
+
   const _FooterChip({required this.icon, required this.label});
 
   @override

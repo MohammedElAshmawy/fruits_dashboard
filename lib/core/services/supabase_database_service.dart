@@ -19,19 +19,46 @@ class SupabaseDatabaseService implements DatabaseService {
     required String path,
     required String documentId,
   }) async {
-    final response = await supabase.from(path).select().eq('uId', documentId)
-        .maybeSingle();
+    final response =
+        await supabase.from(path).select().eq('uId', documentId).maybeSingle();
     return response != null;
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getData({required String path, String? documentUid,
-    Map<String, dynamic>? query,}) async {
+  Future<List<Map<String, dynamic>>> getData({
+    required String path,
+    String? documentUid,
+    Map<String, dynamic>? query,
+  }) async {
     dynamic request = supabase.from(path).select();
     if (documentUid != null) {
       request = request.eq('uId', documentUid);
     }
     final response = await request;
     return List<Map<String, dynamic>>.from(response);
+  }
+
+  @override
+  Stream<List<Map<String, dynamic>>> streamData({
+    required String path,
+    Map<String, dynamic>? query,
+  }) {
+    dynamic request = supabase.from(path).stream(primaryKey: ['id']);
+    if (query != null) {
+      query.forEach((key, value) {
+        request = request.eq(key, value);
+      });
+    }
+    return (request as Stream)
+        .map((data) => List<Map<String, dynamic>>.from(data as List));
+  }
+
+  @override
+  Future<void> updateData({
+    required String path,
+    required Map<String, dynamic> data,
+     String? documentId,
+  }) async {
+    await supabase.from(path).update(data).eq('orderId', documentId!);
   }
 }

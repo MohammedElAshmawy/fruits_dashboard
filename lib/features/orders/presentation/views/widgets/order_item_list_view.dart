@@ -11,7 +11,7 @@ class OrderItemListView extends StatelessWidget {
     return ListView.builder(
         itemCount: orders.length,
         itemBuilder: (context,index){
-          return OrderItem(order: orders[index]);
+          return OrderItem(orderEntity: orders[index]);
         }
     );
   }

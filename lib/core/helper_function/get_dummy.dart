@@ -1,6 +1,7 @@
 import 'package:e_commerce_dashboard/features/orders/domain/entities/order_entity.dart';
 import 'package:e_commerce_dashboard/features/orders/domain/entities/order_product_entity.dart';
 import 'package:e_commerce_dashboard/features/orders/domain/entities/shipping_address_entity.dart';
+import '../../features/orders/data/models/status_enum.dart';
 
 final testOrder = OrderEntity(
   orderId: 'ORD-20481',
@@ -37,5 +38,5 @@ final testOrder = OrderEntity(
       price: 9.99,
       quantity: 1,
     ),
-  ],
+  ], status: OrderStatus.pending,
 );

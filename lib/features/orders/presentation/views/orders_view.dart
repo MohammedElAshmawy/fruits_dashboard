@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../domain/repo/fetch_orders_repo.dart';
 import '../manager/orders_cubit/fetch_orders_state.dart';
+import '../manager/update_order/update_order_cubit.dart';
 
 class OrdersView extends StatelessWidget {
   const OrdersView({super.key});
@@ -15,10 +16,17 @@ class OrdersView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          FetchOrdersCubit(
-              getIt.get<FetchOrdersRepo>())..fetchOrders(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              FetchOrdersCubit(getIt.get<OrdersRepo>())..fetchOrders(),
+        ),
+        BlocProvider(
+          create: (context) =>
+              UpdateOrderCubit(getIt.get<OrdersRepo>()),
+        ),
+      ],
       child: const Scaffold(
         body: OrdersViewBodyBlocBuilder(),
       ),

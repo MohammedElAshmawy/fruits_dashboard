@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../features/orders/data/models/status_enum.dart';
 import 'database_service.dart';
 
 class FireStoreService implements DatabaseService {
@@ -46,4 +47,17 @@ class FireStoreService implements DatabaseService {
       await firestore.collection(path).add(data);
     }
   }
+
+  @override
+  Stream<List<Map<String, dynamic>>> streamData({required String path, Map<String, dynamic>? query}) {
+    // TODO: implement streamData
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateData({required String path, required Map<String, dynamic> data, OrderStatus? orderStatus}) {
+    // TODO: implement updateData
+    throw UnimplementedError();
+  }
+
 }
