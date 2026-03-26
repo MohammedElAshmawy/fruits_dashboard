@@ -55,9 +55,10 @@ class FireStoreService implements DatabaseService {
   }
 
   @override
-  Future<void> updateData({required String path, required Map<String, dynamic> data, OrderStatus? orderStatus}) {
+  Future<void> updateData({required String path, required Map<String, dynamic> data, String? documentId}) {
     // TODO: implement updateData
     throw UnimplementedError();
   }
+
 
 }
